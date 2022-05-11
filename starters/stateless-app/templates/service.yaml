@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "helpers.fullname" . }}
+  labels:
+    {{- include "helpers.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    {{- range $portName, $portMap := .Values.service.ports }}
+    - name: {{ $portName | default "http" }}
+      port: {{ $portMap.port }}
+      targetPort: {{ $portMap.targetPort | default "http" }}
+      protocol: {{ $portMap.protocol | default "TCP" }}
+    {{- end }}
+  selector:
+    {{- include "helpers.selector" . | nindent 4 }}

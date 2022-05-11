@@ -1,0 +1,155 @@
+# Default values for <CHARTNAME>.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: "<CHARTNAME>"
+
+#########
+## APLICATION
+######
+
+image:
+imagePullPolicy: IfNotPresent
+imagePullSecrets: []
+
+#########
+## Entrypoint
+######
+# command: |
+#   ["cmd"]
+# args: |
+#   ["arg1", "arg2"]
+
+env: {}
+#  key: value
+
+secrets: {}
+#  secretName:
+#    secretKey: <Env var name>
+#
+#  postgres-db:
+#    username: DATABASE_USERNAME
+#    password: DATABASE_PASSWORD
+
+#########
+## Labeling
+######
+
+labels: {}
+  # environment: integration
+  # squad: beta
+
+#########
+## SCHEDULING
+######
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+tolerations: []
+  # - key: "spotInstance"
+  #   operator: "Equal"
+  #   value: "true"
+  #   effect: "NoSchedule"
+
+nodeAffinity: {}
+  #  preferredDuringSchedulingIgnoredDuringExecution:
+  #  - weight: 10
+  #    nodeSelectorTerms:
+  #    - matchExpressions:
+  #      - key: spotInstance
+  #        operator: In
+  #        values:
+  #        - "true"
+
+podAnnotations: {}
+  # prometheus.io/scrape: "true"
+  # prometheus.io/port: "3333"
+  # prometheus.io/path: "/metrics"
+
+#########
+## MONITORING
+######
+
+livenessProbe:
+  path: "/"
+  successThreshold: 1
+  failureThreshold: 3
+  periodSeconds: 10
+  timeoutSeconds: 10
+  initialDelaySeconds: 20
+
+readinessProbe:
+  path: "/"
+  successThreshold: 1
+  failureThreshold: 3
+  periodSeconds: 10
+  timeoutSeconds: 10
+  initialDelaySeconds: 20
+
+#########
+## CONNECTIVITY
+######
+
+service:
+  type: ClusterIP
+  ports:
+    http:
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: external-nginx
+    # ingress.kubernetes.io/whitelist-source-range: 189.23.221.102/32
+  hosts: []
+    # - example.com.br
+    # - example.org
+
+  paths:
+    '/': {}
+    # '/other': {}
+
+  tls: []
+  # - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+#########
+## SCALING / ROLLOUT
+######
+
+replicaCount: 1
+
+hpa:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCpu: 70
+  # custom:
+  #   - type: Object
+  #     object:
+  #       metric:
+  #         name: metric_name
+  #       describedObject:
+  #         kind: Deployment
+  #         name: deployment_name
+  #         apiVersion: /v1
+  #       target:
+  #         type: Value
+  #         value: 200
+
+pdb:
+  maxUnavailable: 1
+  # minAvailable: 1
+
+rollingUpdate:
+  maxSurge: 1
